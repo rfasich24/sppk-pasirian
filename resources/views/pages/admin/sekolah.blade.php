@@ -6,58 +6,53 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     @php
-        // Cetak biru deskripsi opsi drop-down dari format data React Anda
         $criteria_mappings = [
             'K1' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'Sangat Jauh'],
-                    ['score' => 2, 'text' => 'Jauh'],
-                    ['score' => 3, 'text' => 'Sedang'],
-                    ['score' => 4, 'text' => 'Dekat'],
-                    ['score' => 5, 'text' => 'Sangat Dekat'],
+                    ['score' => 4, 'text' => '0 s/d 2 km'],
+                    ['score' => 3, 'text' => '2 s/d 4 km'],
+                    ['score' => 2, 'text' => '4 s/d 6 km'],
+                    ['score' => 1, 'text' => '>6 km'],
                 ],
             ],
             'K2' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'Sangat Kurang'],
-                    ['score' => 2, 'text' => 'Kurang'],
-                    ['score' => 3, 'text' => 'Cukup'],
-                    ['score' => 4, 'text' => 'Lengkap'],
-                    ['score' => 5, 'text' => 'Sangat Lengkap'],
+                    ['score' => 3, 'text' => 'Lengkap'],
+                    ['score' => 2, 'text' => 'Standar'],
+                    ['score' => 1, 'text' => 'Tidak Lengkap'],
                 ],
             ],
             'K3' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'Sangat Mahal'],
-                    ['score' => 2, 'text' => 'Mahal'],
-                    ['score' => 3, 'text' => 'Cukup'],
-                    ['score' => 4, 'text' => 'Murah'],
-                    ['score' => 5, 'text' => 'Sangat Murah'],
+                    ['score' => 5, 'text' => '500.000 s/d 1 jt (Murah)'],
+                    ['score' => 4, 'text' => '1 jt s/d 1.500.000 (Sedang)'],
+                    ['score' => 3, 'text' => '1.500.000 s/d 2 jt (Cukup Mahal)'],
+                    ['score' => 2, 'text' => '2 jt s/d 2.500.000 (Mahal)'],
+                    ['score' => 1, 'text' => '>2.500.000 (Sangat Mahal)'],
                 ],
             ],
             'K4' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'C (Cukup)'],
-                    ['score' => 2, 'text' => 'B (Baik)'],
                     ['score' => 3, 'text' => 'A (Unggul)'],
+                    ['score' => 2, 'text' => 'B (Baik)'],
+                    ['score' => 1, 'text' => 'C (Cukup)'],
                 ],
             ],
             'K5' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'Tidak Ada'],
-                    ['score' => 2, 'text' => 'Kecamatan'],
-                    ['score' => 3, 'text' => 'Kabupaten'],
-                    ['score' => 4, 'text' => 'Provinsi'],
-                    ['score' => 5, 'text' => 'Nasional'],
+                    ['score' => 5, 'text' => 'Sangat Berprestasi'],
+                    ['score' => 4, 'text' => 'Berprestasi'],
+                    ['score' => 3, 'text' => 'Cukup'],
+                    ['score' => 2, 'text' => 'Kurang'],
+                    ['score' => 1, 'text' => 'Sangat Kurang'],
                 ],
             ],
             'K6' => [
                 'options' => [
-                    ['score' => 1, 'text' => 'Sangat Sedikit'],
-                    ['score' => 2, 'text' => 'Sedikit'],
-                    ['score' => 3, 'text' => 'Cukup Banyak'],
-                    ['score' => 4, 'text' => 'Banyak'],
-                    ['score' => 5, 'text' => 'Sangat Banyak'],
+                    ['score' => 4, 'text' => 'Ada dan Aktif'],
+                    ['score' => 3, 'text' => 'Ada dan Kurang Aktif'],
+                    ['score' => 2, 'text' => 'Ada dan Berhenti'],
+                    ['score' => 1, 'text' => 'Tidak Ada'],
                 ],
             ],
         ];
