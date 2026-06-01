@@ -18,6 +18,9 @@ Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.log
 // 2. RUTE PROTEKSI ADMIN (Menggunakan Middleware Class Resmi)
 Route::middleware(EnsureAdminAuthenticated::class)->group(function () {
 
+    // Rute Ubah Tipe Kriteria (Cost <=> Benefit)
+    Route::patch('/admin/kriteria/{id}/toggle-type', [AuditTrailController::class, 'toggleType'])->name('admin.kriteria.toggle-type');
+
     // Modul CRUD Kelola Sekolah
     Route::get('/admin/sekolah', [SekolahCrudController::class, 'index'])->name('admin.sekolah.index');
     Route::post('/admin/sekolah', [SekolahCrudController::class, 'store'])->name('admin.sekolah.store');

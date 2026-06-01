@@ -50,7 +50,61 @@
                 </span>
             </div>
         </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden space-y-4 p-6">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border">
+                    <i data-lucide="settings-2" class="w-4 h-4 text-emerald-700"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm">Konfigurasi Tipe Kriteria & Bobot Global</h3>
+                    <p class="text-slate-400 text-xxs">Ubah jenis kriteria (Cost/Benefit) secara langsung untuk memperbarui
+                        arah optimasi perhitungan SMART.</p>
+                </div>
+            </div>
 
+            <div class="overflow-x-auto">
+                <table class="w-full text-center text-sm border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/60 text-slate-400 text-[10px] font-bold border-b border-slate-200/60">
+                            <th class="p-2.5 text-left w-20">KODE</th>
+                            <th class="p-2.5 text-left">NAMA KRITERIA MASTER</th>
+                            <th class="p-2.5 w-32">TIPE OPTIMASI</th>
+                            <th class="p-2.5 text-emerald-700 font-bold">BOBOT GLOBAL AHP</th>
+                            <th class="p-2.5 text-right w-36">AKSI SAKELAR</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700 font-medium text-xs">
+                        @foreach ($kriteria as $k)
+                            <tr class="hover:bg-slate-50/30 transition-colors">
+                                <td class="p-2.5 text-left font-mono font-black text-slate-900">{{ $k->kode_kriteria }}</td>
+                                <td class="p-2.5 text-left font-semibold text-slate-800">{{ $k->nama_kriteria }}</td>
+                                <td class="p-2.5">
+                                    <span
+                                        class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-wider shadow-3xs border {{ $k->tipe === 'benefit' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-orange-50 text-orange-700 border-orange-200' }}">
+                                        {{ $k->tipe }}
+                                    </span>
+                                </td>
+                                <td class="p-2.5 font-mono font-bold text-slate-600">
+                                    {{ number_format($bobot_kriteria[$k->id] ?? ($k->bobot_global ?? 0), 6) }}
+                                </td>
+                                <td class="p-2.5 text-right">
+                                    <form action="{{ route('admin.kriteria.toggle-type', $k->id) }}" method="POST"
+                                        class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xxs py-1.5 px-2.5 rounded-lg inline-flex items-center gap-1.5 shadow-3xs cursor-pointer transition-all active:scale-[0.96]">
+                                            <i data-lucide="refresh-cw" class="w-3 h-3 text-slate-400"></i>
+                                            <span>Ubah Tipe</span>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <!-- BARU: SELEKTOR & TABEL MATRIKS SAATY INDIVIDU RESPONDEN -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden space-y-4 p-6">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">

@@ -85,4 +85,15 @@ class AuditTrailController extends Controller
 
         return view('pages.admin.smart_audit', compact('kriteriaList', 'schools', 'ratings', 'smartData'));
     }
+    // Fungsi mengubah tipe kriteria secara instan
+    public function toggleType($id)
+    {
+        $kriteria = Kriteria::findOrFail($id);
+
+        // Logika sakelar: jika benefit ubah ke cost, jika cost ubah ke benefit
+        $kriteria->tipe = ($kriteria->tipe === 'benefit') ? 'cost' : 'benefit';
+        $kriteria->save();
+
+        return redirect()->back()->with('success', "Tipe kriteria {$kriteria->kode_kriteria} ({$kriteria->nama_kriteria}) berhasil diubah menjadi " . strtoupper($kriteria->tipe) . ".");
+    }
 }
