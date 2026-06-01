@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\SmartService;
+use App\Models\Kriteria;
 use Illuminate\Http\Request;
 
 class RekomendasiController extends Controller
@@ -14,19 +15,19 @@ class RekomendasiController extends Controller
         $this->smartService = $smartService;
     }
 
-    // Fungsi uji coba simulasi kalkulasi SMART via JSON
-    public function testSmartEksekusi()
+    // Menampilkan halaman pencarian rekomendasi (Pengganti rekomendasi.php)
+    public function halamanRekomendasi(Request $request)
     {
-        // Simulasi jika user mencentang semua ID kriteria (1 sampai 6)
-        $kriteriaSimulasi = [1, 2, 3, 4, 5, 6];
-        $limit = 5;
+        $kriteriaAll = Kriteria::whereNotNull('bobot_global')->orderBy('id')->get();
 
-        $hasil = $this->smartService->hitungSmart($kriteriaSimulasi, $limit);
+        $hasilRekomendasi = [];
+        $kriteriaTerpilihIds = $request->input('kriteria_dipilih', []);
+        $limit = (int) $request->input('limit', 5);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Simulasi Perankingan SMART (Kriteria 1-6)',
-            'data' => $hasil
-        ]);
+        if ($request->isMethod('post') && !empty($kriteriaTerpilihIds)) {
+            $hasilRekomendasi = $this->smartService->hitungSmart($kriteriaTerpilihIds, $limit);
+        }
+
+        return view('pages.rekomendasi', compact('kriteriaAll', 'hasilRekomendasi', 'kriteriaTerpilihIds', 'limit'));
     }
 }
