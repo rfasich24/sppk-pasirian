@@ -14,7 +14,7 @@ class SekolahCrudController extends Controller
     // Menampilkan daftar master sekolah dan parameter kriteria (Tabel Manajemen)
     public function index()
     {
-        $schools = Sekolah::orderBy('id')->get();
+        $schools = Sekolah::with('nilaiAlternatif')->orderBy('id')->get();
         $criteriaList = Kriteria::orderBy('id')->get();
 
         // Ambil semua rating dan bangun array multi-dimensi: [sekolah_id][kriteria_id] = skor
