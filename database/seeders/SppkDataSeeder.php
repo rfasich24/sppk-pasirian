@@ -68,5 +68,9 @@ class SppkDataSeeder extends Seeder
             ['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>1,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>5,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>5,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>4,'nilai_saaty'=>0.3333],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>6,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>6,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>4,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000]
         ];
         DB::table('jawaban_kuesioner')->insert($jawaban);
+        // 7. SINKRONISASI SEQUENCE POSTGRESQL (Pencegah Error Duplicate Key)
+        DB::statement("SELECT setval('sekolah_id_seq', (SELECT MAX(id) FROM sekolah));");
+        DB::statement("SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));");
+        DB::statement("SELECT setval('kriteria_id_seq', (SELECT MAX(id) FROM kriteria));");
     }
 }

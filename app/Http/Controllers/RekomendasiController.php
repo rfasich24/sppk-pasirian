@@ -15,19 +15,25 @@ class RekomendasiController extends Controller
         $this->smartService = $smartService;
     }
 
-    // Menampilkan halaman pencarian rekomendasi (Pengganti rekomendasi.php)
     public function halamanRekomendasi(Request $request)
     {
-        $kriteriaAll = Kriteria::whereNotNull('bobot_global')->orderBy('id')->get();
+        $kriteriaAll = Kriteria::orderBy('id')->get();
+        $kriteriaTerpilihIds = $request->input('kriteria_dipilih');
 
-        $hasilRekomendasi = [];
-        $kriteriaTerpilihIds = $request->input('kriteria_dipilih', []);
-        $limit = (int) $request->input('limit', 5);
-
-        if ($request->isMethod('post') && !empty($kriteriaTerpilihIds)) {
-            $hasilRekomendasi = $this->smartService->hitungSmart($kriteriaTerpilihIds, $limit);
+        // Simulasi awal React: otomatis mencentang 4 kriteria pertama di kunjungan awal
+        if ($request->isMethod('get') && empty($kriteriaTerpilihIds)) {
+            $kriteriaTerpilihIds = Kriteria::orderBy('id')->take(4)->pluck('id')->toArray();
+        } elseif (empty($kriteriaTerpilihIds)) {
+            $kriteriaTerpilihIds = [];
         }
 
-        return view('pages.rekomendasi', compact('kriteriaAll', 'hasilRekomendasi', 'kriteriaTerpilihIds', 'limit'));
+        $limit = $request->input('limit', 'all');
+        $recommData = null;
+
+        if (!empty($kriteriaTerpilihIds)) {
+            $recommData = $this->smartService->hitungSmart($kriteriaTerpilihIds, $limit);
+        }
+
+        return view('pages.rekomendasi', compact('kriteriaAll', 'recommData', 'kriteriaTerpilihIds', 'limit'));
     }
 }

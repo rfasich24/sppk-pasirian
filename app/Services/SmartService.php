@@ -8,88 +8,99 @@ use App\Models\NilaiAlternatif;
 
 class SmartService
 {
-    public function hitungSmart(array $kriteriaTerpilihIds, int $limit = 5): array
+    public function hitungSmart(array $kriteriaTerpilihIds, string $limit = 'all'): array
     {
-        if (empty($kriteriaTerpilihIds)) {
-            return [];
-        }
-
-        // 1. FILTER SMART: Ambil data kriteria yang dicentang oleh user saja
-        $kriteriaFilter = Kriteria::whereIn('id', $kriteriaTerpilihIds)
-            ->whereNotNull('bobot_global')
-            ->get();
+        // 1. Ambil semua kriteria untuk perhitungan parameter lengkap
+        $kriteriaAll = Kriteria::orderBy('id')->get();
+        $kriteriaFilter = Kriteria::whereIn('id', $kriteriaTerpilihIds)->whereNotNull('bobot_global')->get();
 
         $totalBobotAsal = $kriteriaFilter->sum('bobot_global');
 
-        if ($totalBobotAsal == 0) {
-            return [];
-        }
-
-        // LANGKAH 1 SMART: Re-Normalisasi Bobot agar total bobot kriteria terpilih = 1.0000
+        // Hitung Re-Normalisasi Bobot SMART real-time
         $bobotBaru = [];
+        $normalizedWeights = [];
         foreach ($kriteriaFilter as $k) {
-            $bobotBaru[$k->id] = (float)$k->bobot_global / $totalBobotAsal;
+            $weight = $totalBobotAsal > 0 ? (float)$k->bobot_global / $totalBobotAsal : 0;
+            $bobotBaru[$k->id] = $weight;
+            $normalizedWeights[$k->kode_kriteria] = $weight;
         }
 
-        // LANGKAH 2 SMART: Ambil skor parameter alternatif untuk mencari Nilai MAX dan MIN
-        $nilaiRaw = NilaiAlternatif::whereIn('kriteria_id', $kriteriaTerpilihIds)->get();
-
+        // Ambil semua nilai alternatif untuk pemetaan skor Max dan Min kriteria
+        $nilaiRaw = NilaiAlternatif::all();
         $skorPerKriteria = [];
         $nilaiSekolahMatrix = [];
+
         foreach ($nilaiRaw as $n) {
             $skorPerKriteria[$n->kriteria_id][] = (float)$n->skor_parameter;
             $nilaiSekolahMatrix[$n->sekolah_id][$n->kriteria_id] = (float)$n->skor_parameter;
         }
 
-        // Cari C_Max dan C_Min untuk setiap kriteria terpilih
-        $cMax = [];
-        $cMin = [];
+        $cMax = []; $cMin = [];
         foreach ($skorPerKriteria as $kritId => $kumpulanSkor) {
             $cMax[$kritId] = max($kumpulanSkor);
             $cMin[$kritId] = min($kumpulanSkor);
         }
 
-        // Ambil seluruh data sekolah untuk dihitung skor akhirnya
         $sekolahAll = Sekolah::all();
-        $hasilRekomendasi = [];
+        $results = [];
 
-        // LANGKAH 3 & 4 SMART: Hitung Nilai Utilitas (U) & Nilai Akhir Per Sekolah
+        // Hitung nilai utilitas dan skor gabungan per sekolah
         foreach ($sekolahAll as $s) {
             $totalSkorSmart = 0;
+            $utilities = [];
+            $rawScores = [];
 
-            foreach ($kriteriaFilter as $k) {
+            foreach ($kriteriaAll as $k) {
                 $skorAsli = $nilaiSekolahMatrix[$s->id][$k->id] ?? 0;
+                $rawScores[$k->kode_kriteria] = $skorAsli;
+
                 $max = $cMax[$k->id] ?? 0;
                 $min = $cMin[$k->id] ?? 0;
 
-                // Rumus Nilai Utilitas SMART (Mencegah pembagian dengan nol jika max == min)
                 if ($max == $min) {
                     $utilitas = 1.0;
                 } else {
                     if ($k->tipe === 'benefit') {
                         $utilitas = ($skorAsli - $min) / ($max - $min);
                     } else {
-                        // Jika tipe Cost (Jarak & Biaya)
                         $utilitas = ($max - $skorAsli) / ($max - $min);
                     }
                 }
+                $utilities[$k->kode_kriteria] = $utilitas;
 
-                // Akumulasi Total Skor (Utilitas x Bobot Baru Hasil Re-Normalisasi)
-                $totalSkorSmart += $utilitas * $bobotBaru[$k->id];
+                // Akumulasi skor jika kriteria ini dipilih oleh user
+                if (in_array($k->id, $kriteriaTerpilihIds)) {
+                    $totalSkorSmart += $utilitas * $bobotBaru[$k->id];
+                }
             }
 
-            $hasilRekomendasi[] = [
-                'nama_sekolah' => $s->nama_sekolah,
-                'skor_akhir' => $totalSkorSmart
+            $results[] = [
+                'schoolId' => $s->id,
+                'schoolName' => $s->nama_sekolah,
+                'finalScore' => $totalSkorSmart * 100, // Diubah ke persen sesuai visual React
+                'rawScores' => $rawScores,
+                'utilities' => $utilities
             ];
         }
 
-        // LANGKAH 5 SMART: Sorting hasil akhir dari nilai terbesar ke terkecil
-        usort($hasilRekomendasi, function ($a, $b) {
-            return $b['skor_akhir'] <=> $a['skor_akhir'];
+        // Sorting dari nilai tertinggi
+        usort($results, function ($a, $b) {
+            return $b['finalScore'] <=> $a['finalScore'];
         });
 
-        // Potong array sesuai limit yang diinginkan
-        return array_slice($hasilRekomendasi, 0, $limit);
+        // Sematkan nomor ranking
+        foreach ($results as $index => &$res) {
+            $res['rank'] = $index + 1;
+        }
+
+        // Potong data jika ada limitasi
+        if ($limit !== 'all') {
+            $results = array_slice($results, 0, (int)$limit);
+        }
+
+        return [
+            'normalizedWeights' => $normalizedWeights,
+            'results' => $results
+        ];
     }
 }
