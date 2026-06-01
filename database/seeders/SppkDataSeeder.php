@@ -10,7 +10,7 @@ class SppkDataSeeder extends Seeder
     public function run(): void
     {
         // 1. Bersihkan data lama dengan CASCADE RESTART IDENTITY
-        DB::statement('TRUNCATE jawaban_kuesioner, nilai_alternatif, users, sekolah, kriteria RESTART IDENTITY CASCADE;');
+        DB::statement('TRUNCATE jawaban_kuesioner, nilai_alternatif, users, sekolah, kriteria, admins RESTART IDENTITY CASCADE;');
 
         // 2. Suntik Data Master Kriteria
         $kriteria = [
@@ -68,6 +68,10 @@ class SppkDataSeeder extends Seeder
             ['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>1,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>5,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>2,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>5,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>4,'nilai_saaty'=>0.3333],['user_id'=>5,'kriteria_id_1'=>1,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>6,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>5,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>6,'kriteria_id_2'=>4,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>6,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000],['user_id'=>5,'kriteria_id_1'=>4,'kriteria_id_2'=>3,'nilai_saaty'=>1.0000]
         ];
         DB::table('jawaban_kuesioner')->insert($jawaban);
+        DB::table('admins')->insert([
+            'username' => 'admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123')
+        ]);
         // 7. SINKRONISASI SEQUENCE POSTGRESQL (Pencegah Error Duplicate Key)
         DB::statement("SELECT setval('sekolah_id_seq', (SELECT MAX(id) FROM sekolah));");
         DB::statement("SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));");

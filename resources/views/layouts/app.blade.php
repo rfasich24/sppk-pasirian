@@ -35,33 +35,52 @@
                         <span>Pencarian Sekolah</span>
                     </a>
 
-                    <span class="text-slate-800 px-2 font-light">|</span>
+                    @if (session()->has('admin_authenticated'))
+                        <span class="text-slate-800 px-2 font-light">|</span>
 
-                    <a href="{{ route('admin.sekolah.index') }}"
-                        class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.sekolah.index') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
-                        <i data-lucide="database" class="w-4 h-4"></i>
-                        <span>Kelola Sekolah</span>
-                    </a>
+                        <a href="{{ route('admin.sekolah.index') }}"
+                            class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.sekolah.index') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
+                            <i data-lucide="database" class="w-4 h-4"></i>
+                            <span>Kelola Sekolah</span>
+                        </a>
 
-                    <a href="{{ route('admin.audit.ahp') }}"
-                        class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.audit.ahp') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                        <span>AHP Audit</span>
-                    </a>
+                        <a href="{{ route('admin.audit.ahp') }}"
+                            class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.audit.ahp') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
+                            <i data-lucide="sliders" class="w-4 h-4"></i>
+                            <span>AHP Audit</span>
+                        </a>
 
-                    <a href="{{ route('admin.audit.smart') }}"
-                        class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.audit.smart') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
-                        <i data-lucide="file-text" class="w-4 h-4"></i>
-                        <span>SMART Audit</span>
-                    </a>
+                        <a href="{{ route('admin.audit.smart') }}"
+                            class="px-3.5 py-2 rounded-lg flex items-center gap-2 transition-all duration-150 {{ request()->routeIs('admin.audit.smart') ? 'bg-slate-800 text-emerald-400 font-extrabold border border-slate-700/50' : 'hover:text-white hover:bg-slate-800/40' }}">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            <span>SMART Audit</span>
+                        </a>
+                    @endif
                 </nav>
 
                 <div class="flex items-center gap-4">
-                    <a href="#" id="btn-navbar-login-trigger"
-                        class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs border border-emerald-500/30">
-                        <i data-lucide="log-in" class="w-4 h-4"></i>
-                        <span>Login Admin</span>
-                    </a>
+                    @if (session()->has('admin_authenticated'))
+                        <div class="flex items-center gap-3">
+                            <span
+                                class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-md font-mono">
+                                👤 {{ session('admin_username') }}
+                            </span>
+                            <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs border border-red-500/35 cursor-pointer">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                                    <span>Keluar Sesi</span>
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="{{ route('admin.login') }}" id="btn-navbar-login-trigger"
+                            class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs border border-emerald-500/30">
+                            <i data-lucide="log-in" class="w-4 h-4"></i>
+                            <span>Login Admin</span>
+                        </a>
+                    @endif
                 </div>
 
             </div>
