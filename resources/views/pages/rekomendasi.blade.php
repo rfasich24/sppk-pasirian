@@ -6,14 +6,14 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     @php
-        // Pemetaan menggunakan Key Kode K1 - K6 sesuai preferensi Anda
+        // Pemetaan K1 s/d K6 dengan pembetulan arah skor linear naik (Jarak & Biaya dibalik)
         $criteria_mappings = [
             'K1' => [
                 'options' => [
-                    ['score' => 4, 'text' => '0 s/d 2 km'],
-                    ['score' => 3, 'text' => '2 s/d 4 km'],
-                    ['score' => 2, 'text' => '4 s/d 6 km'],
-                    ['score' => 1, 'text' => '>6 km'],
+                    ['score' => 1, 'text' => '0 s/d 2 km'],
+                    ['score' => 2, 'text' => '2 s/d 4 km'],
+                    ['score' => 3, 'text' => '4 s/d 6 km'],
+                    ['score' => 4, 'text' => '>6 km'],
                 ],
             ],
             'K2' => [
@@ -25,11 +25,11 @@
             ],
             'K3' => [
                 'options' => [
-                    ['score' => 5, 'text' => '500.000 s/d 1 jt (Murah)'],
-                    ['score' => 4, 'text' => '1 jt s/d 1.500.000 (Sedang)'],
+                    ['score' => 1, 'text' => '500.000 s/d 1 jt (Murah)'],
+                    ['score' => 2, 'text' => '1 jt s/d 1.500.000 (Sedang)'],
                     ['score' => 3, 'text' => '1.500.000 s/d 2 jt (Cukup Mahal)'],
-                    ['score' => 2, 'text' => '2 jt s/d 2.500.000 (Mahal)'],
-                    ['score' => 1, 'text' => '>2.500.000 (Sangat Mahal)'],
+                    ['score' => 4, 'text' => '2 jt s/d 2.500.000 (Mahal)'],
+                    ['score' => 5, 'text' => '>2.500.000 (Sangat Mahal)'],
                 ],
             ],
             'K4' => [
